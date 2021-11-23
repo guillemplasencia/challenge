@@ -31,6 +31,15 @@ public class StudentService
         this.courseRegistrationRepository = courseRegistrationRepository;
     }
 
+    public List<Student> listNotEnrolledStudents(final String courseName)
+    {
+        final Course course =
+            courseRepository.findByNameIgnoreCase(courseName).orElseThrow(() -> new CourseNotFoundException(String.format("Course ",
+                courseName, " not found")));
+
+        return studentRepository.findStudentByCourseName(course.getName());
+    }
+
     public List<Student> listEnrolledStudents(final String courseName)
     {
         final Course course =
@@ -91,5 +100,15 @@ public class StudentService
         courseRegistration.setScore(scoreRequest.getScore());
         courseRegistrationRepository.save(courseRegistration);
         return courseRegistration;
+    }
+
+    public List<Student> findStudentsNotEnrolledInCourse(final String courseName)
+    {
+        final Course course =
+            courseRepository.findByNameIgnoreCase(courseName)
+                .orElseThrow(() -> new CourseNotFoundException(String.format("Course ",
+                    courseName, " not found")));
+
+        return studentRepository.findStudentsNotEnrolledInCourse(course.getName());
     }
 }

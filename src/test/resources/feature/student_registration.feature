@@ -21,12 +21,10 @@ Feature: Student registration
     Given student named 'xyz' successfully registers into courses "course A, course B"
     Then student 'xyz' score '5.0' of course 'course A' is successfully saved
 
-  @WorkInProgress
   Scenario: List all students not enrolled to a course
     Given student named 'xyz' successfully registers into courses "course A, course B"
     And student named 'abc' successfully registers into courses "course B, course C"
     And student named 'def' successfully registers into courses "course D"
     Then list of students not enrolled in course 'course A' shows:
-    |studentName|
     |    abc    |
     |    def    |

@@ -110,4 +110,18 @@ public class CucumberSteps
             .expectStatus().isOk()
             .expectBody(StudentCourseScoreDTO.class).isEqualTo(expected);
     }
+
+    @Then("list of students not enrolled in course {string} shows:")
+    public void list_of_students_not_enrolled_in_course_shows(String courseName,
+                                                              List<LightweightStudentDTO> expectedStudents) {
+
+        ParameterizedTypeReference<List<LightweightStudentDTO>> lightweightStudentResponse = new ParameterizedTypeReference<>()
+        {
+        };
+
+        applicationClient.getWebTestClient().get().uri("/students/listNotEnrolled?courseName={name}", courseName)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(lightweightStudentResponse).isEqualTo(expectedStudents);
+    }
 }

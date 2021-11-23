@@ -30,6 +30,14 @@ public class StudentController
         this.studentService = studentService;
     }
 
+    @GetMapping(value = "/listNotEnrolled")
+    public ResponseEntity<List<LightweightStudentDTO>> listStudentsNotEnrolledInCourse(@RequestParam String courseName)
+    {
+        final var students = studentService.findStudentsNotEnrolledInCourse(courseName);
+        final var resp = LightweightStudentDTO.from(students);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
     @PostMapping(value = "/register")
     public ResponseEntity<StudentRegistrationDTO> registerStudent(@RequestBody StudentRegistrationDTO registrationRequest)
     {
