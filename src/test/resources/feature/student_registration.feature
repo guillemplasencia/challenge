@@ -17,10 +17,9 @@ Feature: Student registration
     | abc       |
     | xyz       |
 
-  @WorkInProgress
   Scenario: Save student course scores
     Given student named 'xyz' successfully registers into courses "course A, course B"
-    Then student score '5.0' of course 'course A' is successfully saved
+    Then student 'xyz' score '5.0' of course 'course A' is successfully saved
 
   @WorkInProgress
   Scenario: List all students not enrolled to a course

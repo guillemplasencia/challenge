@@ -5,7 +5,11 @@ import java.util.List;
 import com.guillempg.challenge.domain.Course;
 import com.guillempg.challenge.domain.CourseRegistration;
 import com.guillempg.challenge.domain.Student;
+import com.guillempg.challenge.dto.StudentCourseScoreDTO;
 import com.guillempg.challenge.dto.StudentRegistrationDTO;
+import com.guillempg.challenge.exceptions.CourseNotFoundException;
+import com.guillempg.challenge.exceptions.CourseRegistrationNotFoundException;
+import com.guillempg.challenge.exceptions.StudentNotFoundException;
 import com.guillempg.challenge.repositories.CourseRegistrationRepository;
 import com.guillempg.challenge.repositories.CourseRepository;
 import com.guillempg.challenge.repositories.StudentRepository;
@@ -29,7 +33,11 @@ public class StudentService
 
     public List<Student> listEnrolledStudents(final String courseName)
     {
-        return studentRepository.findStudentByCourseName(courseName);
+        final Course course =
+            courseRepository.findByNameIgnoreCase(courseName).orElseThrow(() -> new CourseNotFoundException(String.format("Course ",
+                courseName, " not found")));
+
+        return studentRepository.findStudentByCourseName(course.getName());
     }
 
     @Transactional
@@ -61,5 +69,27 @@ public class StudentService
             .map(courseName -> courseRepository.findByNameIgnoreCase(courseName)
                 .orElseGet(() -> courseRepository.save(new Course().setName(courseName))))
             .toList();
+    }
+
+    public CourseRegistration score(final StudentCourseScoreDTO scoreRequest)
+    {
+        final Course course =
+            courseRepository.findByNameIgnoreCase(scoreRequest.getCourseName())
+                .orElseThrow(() -> new CourseNotFoundException(String.format("Course ",
+                scoreRequest.getCourseName(), " not found")));
+
+        final Student student =
+            studentRepository.findStudentByNameIgnoreCase(scoreRequest.getStudentName())
+                .orElseThrow(() -> new StudentNotFoundException(String.format("Student ",
+                    scoreRequest.getStudentName(), " not found")));
+
+        final CourseRegistration courseRegistration =
+            courseRegistrationRepository.findByCourseNameIgnoreCaseAndStudentNameIgnoreCase(course.getName(), student.getName())
+            .orElseThrow(() -> new CourseRegistrationNotFoundException(String.format("Course registration for Student ",
+                scoreRequest.getStudentName(), " into course ", scoreRequest.getCourseName(), "not found")));
+
+        courseRegistration.setScore(scoreRequest.getScore());
+        courseRegistrationRepository.save(courseRegistration);
+        return courseRegistration;
     }
 }

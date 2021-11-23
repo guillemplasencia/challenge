@@ -4,8 +4,8 @@ student_registration.feature in src/test/resources/feature folder).
 DDL is in src/test/resources/ddl/init.sql (used in cucumber tests to initialize)
 
 Not all use cases were actually implemented, I did TDD and wrote failing tests before any implementation.
-Section 1 and 2.1, 2.2 and 2.3 implemented and tested. Test for 2.4 isn't finished, but I'd add the "score"
-as a new column of the Entity CourseRegistration (DDL has it already, it's just the cucumber test still not finished).
+Section 1 and 2.1, 2.2, 2.3 and 2.4 implemented and tested. For 2.4 the "score"
+is a new column of the Entity CourseRegistration.
 As for 2.5, I'd add a new method in StudentRepository annotated with @Query. This @Query would select all students whose ids
 were not in a sub select query. This "sub select" would query all student ids whose course registrations' course name are equal to the course name provided:
 

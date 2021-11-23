@@ -7,6 +7,7 @@ import java.util.List;
 import com.guillempg.challenge.client.ApplicationClient;
 import com.guillempg.challenge.config.CompositeRepository;
 import com.guillempg.challenge.dto.LightweightStudentDTO;
+import com.guillempg.challenge.dto.StudentCourseScoreDTO;
 import com.guillempg.challenge.dto.StudentRegistrationDTO;
 
 import org.springframework.context.ConfigurableApplicationContext;
@@ -85,5 +86,28 @@ public class CucumberSteps
             .exchange()
             .expectStatus().isOk()
             .expectBody(lightweightStudentResponse).isEqualTo(expectedStudents);
+    }
+
+    @Then("student {string} score {string} of course {string} is successfully saved")
+    public void student_score_of_course_is_successfully_saved(String studentName,
+                                                              String scoreString,
+                                                              String courseName) {
+        final String url = "/students/score";
+
+        final StudentCourseScoreDTO scoreHttpRequest = new StudentCourseScoreDTO()
+            .setStudentName(studentName)
+            .setScore(Double.valueOf(scoreString))
+            .setCourseName(courseName);
+
+        StudentCourseScoreDTO expected = new StudentCourseScoreDTO()
+            .setStudentName(studentName)
+            .setScore(Double.valueOf(scoreString))
+            .setCourseName(courseName);
+
+        applicationClient.getWebTestClient().post().uri(url)
+            .bodyValue(scoreHttpRequest)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(StudentCourseScoreDTO.class).isEqualTo(expected);
     }
 }

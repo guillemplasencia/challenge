@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.guillempg.challenge.domain.Student;
 import com.guillempg.challenge.dto.LightweightStudentDTO;
+import com.guillempg.challenge.dto.StudentCourseScoreDTO;
 import com.guillempg.challenge.dto.StudentRegistrationDTO;
 import com.guillempg.challenge.services.StudentService;
 
@@ -34,6 +35,14 @@ public class StudentController
     {
         final var savedStudent = studentService.registerStudent(registrationRequest);
         final var resp = StudentRegistrationDTO.from(savedStudent);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/score")
+    public ResponseEntity<StudentCourseScoreDTO> score(@RequestBody StudentCourseScoreDTO scoreRequest)
+    {
+        final var savedScore = studentService.score(scoreRequest);
+        final var resp = StudentCourseScoreDTO.from(savedScore);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
