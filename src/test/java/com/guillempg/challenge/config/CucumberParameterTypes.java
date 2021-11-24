@@ -25,4 +25,14 @@ public class CucumberParameterTypes
     {
         return new LightweightStudentDTO().setStudentName(studentName);
     }
+
+    @ParameterType("successfully|unsuccessfully")
+    public boolean expectedSuccess(String expectedSuccess)
+    {
+        return switch(expectedSuccess){
+            case "successfully" -> true;
+            case "unsuccessfully" -> false;
+            default -> false;
+        };
+    }
 }

@@ -46,8 +46,10 @@ public class CucumberSteps
         assertTrue(context.isRunning());
     }
 
-    @Then("student named {string} successfully registers into courses {courses}")
-    public void studentRegistersIntoCourses(String studentName, List<String> courseNames) {
+    @Then("student named {string} {expectedSuccess} registers into courses {courses}")
+    public void studentRegistersIntoCourses(String studentName,
+                                            boolean expectedSuccess,
+                                            List<String> courseNames) {
         final String url = "/students/register";
 
         final StudentRegistrationDTO studentHttpRequest = new StudentRegistrationDTO()
@@ -58,21 +60,42 @@ public class CucumberSteps
             .setStudentName(studentName)
             .setCourseNames(courseNames);
 
-        applicationClient.getWebTestClient().post().uri(url)
-            .bodyValue(studentHttpRequest)
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(StudentRegistrationDTO.class).isEqualTo(expected);
+        if (expectedSuccess)
+        {
+            applicationClient.getWebTestClient().post().uri(url)
+                .bodyValue(studentHttpRequest)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(StudentRegistrationDTO.class).isEqualTo(expected);
+        }
+        else
+        {
+            applicationClient.getWebTestClient().post().uri(url)
+                .bodyValue(studentHttpRequest)
+                .exchange()
+                .expectStatus().is5xxServerError();
+        }
     }
 
-    @Then("student named {string} and its registered courses are successfully deleted")
-    public void deleteStudent(String studentName){
+    @Then("student named {string} and its registered courses are {expectedSuccess} deleted")
+    public void deleteStudent(String studentName,
+                              boolean expectedSuccess){
         final String url = "/students/"+studentName;
 
-        applicationClient.getWebTestClient().delete()
-            .uri(url)
-            .exchange()
-            .expectStatus().isOk();
+        if (expectedSuccess)
+        {
+            applicationClient.getWebTestClient().delete()
+                .uri(url)
+                .exchange()
+                .expectStatus().isOk();
+        }
+        else
+        {
+            applicationClient.getWebTestClient().delete()
+                .uri(url)
+                .exchange()
+                .expectStatus().is5xxServerError();
+        }
     }
 
     @Then("listing all students enrolled into course {string} shows:")

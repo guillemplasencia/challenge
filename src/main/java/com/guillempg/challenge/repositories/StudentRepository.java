@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface StudentRepository extends JpaRepository<Student, Long>
 {
-    void deleteByNameIgnoreCase(String name);
+    Integer deleteByNameIgnoreCase(String name);
 
     Optional<Student> findStudentByNameIgnoreCase(String name);
 
