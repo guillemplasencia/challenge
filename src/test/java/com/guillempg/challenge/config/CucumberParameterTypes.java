@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.guillempg.challenge.dto.LightweightStudentDTO;
 
+import org.springframework.http.HttpStatus;
+
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.ParameterType;
 

@@ -2,7 +2,6 @@ package com.guillempg.challenge.controller;
 
 import java.util.List;
 
-import com.guillempg.challenge.domain.Student;
 import com.guillempg.challenge.dto.LightweightStudentDTO;
 import com.guillempg.challenge.dto.StudentCourseScoreDTO;
 import com.guillempg.challenge.dto.StudentRegistrationDTO;
@@ -33,7 +32,7 @@ public class StudentController
     @GetMapping(value = "/listNotEnrolled")
     public ResponseEntity<List<LightweightStudentDTO>> listStudentsNotEnrolledInCourse(@RequestParam String courseName)
     {
-        final var students = studentService.findStudentsNotEnrolledInCourse(courseName);
+        final var students = studentService.listStudentsNotEnrolledInCourse(courseName);
         final var resp = LightweightStudentDTO.from(students);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }

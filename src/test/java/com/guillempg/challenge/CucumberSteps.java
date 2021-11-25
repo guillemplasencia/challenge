@@ -94,7 +94,7 @@ public class CucumberSteps
             applicationClient.getWebTestClient().delete()
                 .uri(url)
                 .exchange()
-                .expectStatus().is5xxServerError();
+                .expectStatus().isNotFound();
         }
     }
 
@@ -146,5 +146,40 @@ public class CucumberSteps
             .exchange()
             .expectStatus().isOk()
             .expectBody(lightweightStudentResponse).isEqualTo(expectedStudents);
+    }
+
+    @Then("listing all students enrolled into course {string} reports error http status {int}")
+    public void listing_all_students_enrolled_into_course_reports_error(String courseName, Integer httpStatus) {
+        applicationClient.getWebTestClient().get().uri("/students/list?courseName={name}", courseName)
+            .exchange()
+            .expectStatus().isEqualTo(httpStatus);
+    }
+
+    @Then("saving student {string} score {double} of course {string} gives error with http status {int}")
+    public void invalidStudentScore(
+        String studentName,
+        Double score,
+        String courseName,
+        Integer httpStatus) {
+
+        final String url = "/students/score";
+
+        final StudentCourseScoreDTO scoreHttpRequest = new StudentCourseScoreDTO()
+            .setStudentName(studentName)
+            .setScore(score)
+            .setCourseName(courseName);
+
+        applicationClient.getWebTestClient().post().uri(url)
+            .bodyValue(scoreHttpRequest)
+            .exchange()
+            .expectStatus().isEqualTo(httpStatus);
+    }
+
+    @Then("list of students not enrolled in course {string} gives error with http status {int}")
+    public void list_of_students_not_enrolled_in_course_gives_error_with_http_status(String courseName, Integer httpStatus) {
+
+        applicationClient.getWebTestClient().get().uri("/students/listNotEnrolled?courseName={name}", courseName)
+            .exchange()
+            .expectStatus().isEqualTo(httpStatus);
     }
 }

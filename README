@@ -1,5 +1,8 @@
-Using MySQL as DB, tests written in Gherkin (cucumber framework) for each one of the use cases (file
-student_registration.feature in src/test/resources/feature folder).
+Using MySQL as DB, tests written in Gherkin (cucumber framework) in src/test/resources/feature folder
+for each one of the use cases:
+file student_registration.feature for positive ("happy path") cases
+file student_registration_error_handling.feature for use cases generating errors (ie. providing student or course names
+for unexisting entities, negative score values...)
 
 DDL is in src/test/resources/ddl/init.sql (used in cucumber tests to initialize)
 

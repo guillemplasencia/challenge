@@ -11,6 +11,7 @@ import com.guillempg.challenge.dto.StudentCourseScoreDTO;
 import com.guillempg.challenge.dto.StudentRegistrationDTO;
 import com.guillempg.challenge.exceptions.CourseNotFoundException;
 import com.guillempg.challenge.exceptions.CourseRegistrationNotFoundException;
+import com.guillempg.challenge.exceptions.InvalidScoreException;
 import com.guillempg.challenge.exceptions.StudentNotFoundException;
 import com.guillempg.challenge.repositories.CourseRegistrationRepository;
 import com.guillempg.challenge.repositories.CourseRepository;
@@ -33,15 +34,6 @@ public class StudentService
         this.courseRegistrationRepository = courseRegistrationRepository;
     }
 
-    public List<Student> listNotEnrolledStudents(final String courseName)
-    {
-        final Course course =
-            courseRepository.findByNameIgnoreCase(courseName).orElseThrow(() -> new CourseNotFoundException(format("Course ",
-                courseName, " not found")));
-
-        return studentRepository.findStudentByCourseName(course.getName());
-    }
-
     public List<Student> listEnrolledStudents(final String courseName)
     {
         final Course course =
@@ -55,7 +47,7 @@ public class StudentService
     public void deleteStudent(final String studentName)
     {
         final Integer deletedId = studentRepository.deleteByNameIgnoreCase(studentName);
-        if (deletedId < 0)
+        if (deletedId != 1)
         {
             throw new StudentNotFoundException(format("Student ", studentName, " does not exist"));
         }
@@ -103,12 +95,17 @@ public class StudentService
             .orElseThrow(() -> new CourseRegistrationNotFoundException(format("Course registration for Student ",
                 scoreRequest.getStudentName(), " into course ", scoreRequest.getCourseName(), "not found")));
 
+        if (scoreRequest.getScore() < 0)
+        {
+            throw new InvalidScoreException("Score value can not be negative");
+        }
+
         courseRegistration.setScore(scoreRequest.getScore());
         courseRegistrationRepository.save(courseRegistration);
         return courseRegistration;
     }
 
-    public List<Student> findStudentsNotEnrolledInCourse(final String courseName)
+    public List<Student> listStudentsNotEnrolledInCourse(final String courseName)
     {
         final Course course =
             courseRepository.findByNameIgnoreCase(courseName)
